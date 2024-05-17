@@ -1,6 +1,9 @@
 import { Routes, Route } from "react-router-dom";
-import { Auth } from "../pages/admin";
+import { Auth, Users, Blog, Courses, Menu, NewsLetter } from "../pages/admin";
 import { AdminLayout } from "../layouts/AdminLayout/AdminLayout";
+
+const user = null;
+// const user = { test: "test" };
 
 export const AdminRouter = () => {
   const loadLayout = (Layout, Page) => {
@@ -13,7 +16,30 @@ export const AdminRouter = () => {
 
   return (
     <Routes>
-      <Route path="/admin/*" element={loadLayout(AdminLayout, Auth)} />
+      {!user ? (
+        <Route path="/admin/*" element={loadLayout(AdminLayout, Auth)} />
+      ) : (
+        <>
+          {["/admin", "/admin/blog"].map((path) => (
+            <Route
+              key={path}
+              path={path}
+              element={loadLayout(AdminLayout, Blog)}
+            />
+          ))}
+
+          <Route path="/admin/users" element={loadLayout(AdminLayout, Users)} />
+          <Route
+            path="/admin/courses"
+            element={loadLayout(AdminLayout, Courses)}
+          />
+          <Route path="/admin/menu" element={loadLayout(AdminLayout, Menu)} />
+          <Route
+            path="/admin/newsletter"
+            element={loadLayout(AdminLayout, NewsLetter)}
+          />
+        </>
+      )}
     </Routes>
   );
 };

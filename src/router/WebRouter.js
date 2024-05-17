@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { Home } from "../pages/web";
+import { Home, Blog, Contact, Courses, Post } from "../pages/web";
 import { ClientLayout } from "../layouts/ClientLayout/ClientLayout";
 
 export const WebRouter = () => {
@@ -14,6 +14,10 @@ export const WebRouter = () => {
   return (
     <Routes>
       <Route path="/" element={loadLayout(ClientLayout, Home)} />
+      <Route path="/courses" element={loadLayout(ClientLayout, Courses)} />
+      <Route path="/contact" element={loadLayout(ClientLayout, Contact)} />
+      <Route path="/blog" element={loadLayout(ClientLayout, Blog)} />
+      <Route path="/blog/:path" element={loadLayout(ClientLayout, Post)} />
     </Routes>
   );
 };
