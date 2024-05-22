@@ -3,11 +3,11 @@ import { Form } from "semantic-ui-react";
 import { useFormik } from "formik";
 import { initialValues, validationSchema } from "./ValidateForm";
 import { Auth } from "../../../../api/auth";
-import "./RegisterForm.scss";
+import "./LoginForm.scss";
 
 const authController = new Auth();
 
-export function RegisterForm({ openLogin }) {
+export function LoginForm() {
   const [error, setError] = useState("");
 
   const formik = useFormik({
@@ -17,8 +17,8 @@ export function RegisterForm({ openLogin }) {
     onSubmit: async (formValue) => {
       try {
         setError("");
-        await authController.register(formValue);
-        openLogin();
+        const response = await authController.login(formValue);
+        console.log(response);
       } catch (error) {
         setError("Error en el servidor");
         console.error(error);
@@ -26,7 +26,7 @@ export function RegisterForm({ openLogin }) {
     },
   });
   return (
-    <Form className="register-form" onSubmit={formik.handleSubmit}>
+    <Form className="login-form" onSubmit={formik.handleSubmit}>
       <Form.Input
         name="email"
         placeholder="Correo electronico"
@@ -42,27 +42,11 @@ export function RegisterForm({ openLogin }) {
         value={formik.values.password}
         error={formik.errors.password}
       />
-      <Form.Input
-        type="password"
-        name="repeatPassword"
-        placeholder="Repetir contraseña"
-        onChange={formik.handleChange}
-        value={formik.values.repeatPassword}
-        error={formik.errors.repeatPassword}
-      />
-      <Form.Checkbox
-        name="conditionsAccepted"
-        label="He leído y acepto politicas de privacidad"
-        onChange={(_, data) =>
-          formik.setFieldValue("conditionsAccepted", data.checked)
-        }
-        checked={formik.values.conditionsAccepted}
-        error={formik.errors.conditionsAccepted}
-      />
+
       <Form.Button type="submit" primary fluid loading={formik.isSubmitting}>
-        Crear cuenta
+        Entrar
       </Form.Button>
-      <p className="register-form__error">{error}</p>
+      <p className="login-form__error">{error}</p>
     </Form>
   );
 }
