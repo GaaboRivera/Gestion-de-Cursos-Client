@@ -4,10 +4,12 @@ import { useFormik } from "formik";
 import { initialValues, validationSchema } from "./ValidateForm";
 import { Auth } from "../../../../api/auth";
 import "./LoginForm.scss";
+import { useAuth } from "../../../../hooks";
 
 const authController = new Auth();
 
 export function LoginForm() {
+  const { login } = useAuth();
   const [error, setError] = useState("");
 
   const formik = useFormik({
@@ -17,8 +19,11 @@ export function LoginForm() {
     onSubmit: async (formValue) => {
       try {
         setError("");
-        const response = await authController.login(formValue);
-        console.log(response);
+        const { access, refresh } = await authController.login(formValue);
+        authController.setAccessToken(access);
+        authController.setRefreshToken(refresh);
+
+        login(access);
       } catch (error) {
         setError("Error en el servidor");
         console.error(error);
