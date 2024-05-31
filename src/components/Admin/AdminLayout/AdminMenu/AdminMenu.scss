@@ -1,0 +1,21 @@
+@import "~/src/scss/index.scss";
+
+.admin-menu {
+  .MuiListItemButton-root {
+    display: flex;
+    color: $text-light;
+    padding: 15px 20px;
+    margin: 0;
+
+    &:hover,
+    &.Mui-selected,
+    &.Mui-selected:hover {
+      color: $text-light;
+      background-color: $primary-hover;
+    }
+
+    svg {
+      color: $text-light;
+    }
+  }
+}

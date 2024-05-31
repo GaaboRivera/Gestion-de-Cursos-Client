@@ -18,6 +18,8 @@ export function validationSchema() {
     repeatPassword: Yup.string()
       .required("Campo obligatorio")
       .oneOf([Yup.ref("password")], "Las contraseñas deben ser iguales"),
-    conditionsAccepted: Yup.bool().isTrue(true),
+    conditionsAccepted: Yup.boolean()
+      .oneOf([true], "Debe aceptar las políticas de privacidad")
+      .required("Debe aceptar las políticas de privacidad"),
   });
 }
