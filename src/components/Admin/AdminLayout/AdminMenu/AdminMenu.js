@@ -15,7 +15,7 @@ import "./AdminMenu.scss";
 import { useAuth } from "../../../../hooks";
 
 export function AdminMenu() {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(4);
   const {
     user: { role },
   } = useAuth();

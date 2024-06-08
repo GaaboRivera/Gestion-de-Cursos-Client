@@ -1,0 +1,27 @@
+@import "~/src/scss/index.scss";
+
+.users-page {
+  &__add {
+    position: absolute !important;
+    right: 0;
+    top: 0;
+  }
+  &__forms {
+    .tab-menu {
+      justify-content: center;
+      background-color: #fff;
+      font-size: 18px;
+      text-transform: capitalize;
+      color: $text-dark;
+    }
+
+    .MuiTabs-indicator {
+      top: 0;
+      height: 3px;
+    }
+    .panel {
+      background-color: #fff;
+      width: 450px;
+    }
+  }
+}
