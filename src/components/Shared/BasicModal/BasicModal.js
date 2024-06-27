@@ -23,7 +23,10 @@ export function BasicModal({
         fullWidth={true}
       >
         {title && (
-          <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          <DialogTitle
+            sx={{ m: 0, p: 2, fontWeight: "bold" }}
+            id="customized-dialog-title"
+          >
             {title}
           </DialogTitle>
         )}

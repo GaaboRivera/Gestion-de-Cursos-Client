@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { Box, Grid, Tabs, Tab, Button } from "@mui/material";
-import "./Users.scss";
-import { getCssVariable } from "../../../utils/getColorSass";
 import { BasicModal } from "../../../components/Shared/BasicModal/BasicModal";
-import { UserForm } from "../../../components/Admin/Users/UserForm/UserForm";
+import { UserForm, ListUsers } from "../../../components/Admin/Users";
+import "./Users.scss";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -30,6 +29,7 @@ function a11yProps(index) {
 
 export const Users = () => {
   const [value, setValue] = useState(0);
+  const [reload, setReload] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const panes = [
     {
@@ -40,6 +40,7 @@ export const Users = () => {
     },
   ];
   const onOpenCloseModal = () => setShowModal(!showModal);
+  const onReload = () => setReload((prevState) => !prevState);
 
   return (
     <Grid container className="users-page">
@@ -52,45 +53,33 @@ export const Users = () => {
           Nuevo usuario
         </Button>
       </Grid>
-      <Grid item>
-        <Tabs
-          value={value}
-          onChange={(_, data) => {
-            setValue(data);
-          }}
-          className="users-page__forms"
-          aria-label="basic tabs example"
-        >
-          {panes.map((tab, index) => {
-            return (
-              <Tab
-                key={tab.menuItem}
-                label={tab.menuItem}
-                {...a11yProps(index)}
-                className="tab-menu"
-                sx={{
-                  borderBottom: `1px solid ${getCssVariable("--borderGrey")}`,
-                  "&.Mui-selected": {
-                    borderRight:
-                      value === 0
-                        ? `1px solid ${getCssVariable("--borderGrey")}`
-                        : "",
-                    borderLeft:
-                      value === 1
-                        ? `1px solid ${getCssVariable("--borderGrey")}`
-                        : "",
-                    borderBottom: "none",
-                  },
-                }}
-              />
-            );
-          })}
-        </Tabs>
+      <Grid item xs={12}>
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs
+            value={value}
+            onChange={(_, data) => {
+              setValue(data);
+            }}
+            className="users-page__forms"
+            aria-label="basic tabs example"
+          >
+            {panes.map((tab, index) => {
+              return (
+                <Tab
+                  key={tab.menuItem}
+                  label={tab.menuItem}
+                  {...a11yProps(index)}
+                  className="tab-menu"
+                />
+              );
+            })}
+          </Tabs>
+        </Box>
         <CustomTabPanel value={value} index={0} className="panel">
-          Usuarios activos
+          <ListUsers userActive={true} reload={reload} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1} className="panel">
-          Usuarios inactivos
+          <ListUsers userActive={false} reload={reload} />
         </CustomTabPanel>
       </Grid>
       <BasicModal
@@ -98,7 +87,7 @@ export const Users = () => {
         handleClose={onOpenCloseModal}
         title={"Crear nuevo usuario"}
       >
-        <UserForm />
+        <UserForm close={onOpenCloseModal} onReload={onReload} />
       </BasicModal>
     </Grid>
   );

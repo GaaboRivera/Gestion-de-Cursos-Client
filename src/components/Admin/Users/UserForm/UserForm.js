@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
+  Avatar,
   Box,
   Button,
   FormControl,
@@ -11,24 +12,34 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import { initialValues, validationSchema } from "./ValidateForm";
+import { useDropzone } from "react-dropzone";
 import "./UserForm.scss";
+import { image } from "../../../../assets";
+import { User } from "../../../../api";
+import { useAuth } from "../../../../hooks";
+import { ENV } from "../../../../utils";
+
+const userController = new User();
 
 export function UserForm(props) {
   const { close, onReload, user } = props;
+  const { accessToken } = useAuth();
   const [error, setError] = useState("");
 
   const formik = useFormik({
-    initialValues: initialValues(),
-    validationSchema: validationSchema(),
+    initialValues: initialValues(user),
+    validationSchema: validationSchema(user),
     validateOnChange: false,
     onSubmit: async (formValue) => {
       try {
         setError("");
-        console.log(formValue);
-        // const { access, refresh } = await authController.login(formValue);
-        // authController.setAccessToken(access);
-        // authController.setRefreshToken(refresh);
-        // login(access);
+        if (!user) {
+          await userController.createUser(accessToken, formValue);
+        } else {
+          console.log("update");
+        }
+        onReload();
+        close();
       } catch (error) {
         setError("Error en el servidor");
         console.error(error);
@@ -36,9 +47,42 @@ export function UserForm(props) {
     },
   });
 
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      const file = acceptedFiles[0];
+      formik.setFieldValue("avatar", URL.createObjectURL(file));
+      formik.setFieldValue("fileAvatar", file);
+    },
+    [formik]
+  );
+
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: "image/jpeg, image/png",
+    onDrop,
+  });
+
+  const getAvatar = () => {
+    if (formik.values.fileAvatar) {
+      return formik.values.avatar;
+    } else if (formik.values.avatar) {
+      return `${ENV.BASE_PATH}/${formik.values.avatar}`;
+    }
+    return image.noAvatar;
+  };
+
   return (
-    <Box component={"form"} onSubmit={formik.handleSubmit}>
+    <Box
+      component={"form"}
+      onSubmit={formik.handleSubmit}
+      className="user-form"
+    >
       <Grid container spacing={2}>
+        <Grid item xs={12} {...getRootProps()} className="user-form__avatar">
+          <input {...getInputProps()} />
+          <div className="image">
+            <Avatar alt="Remy Sharp" src={getAvatar()} />
+          </div>
+        </Grid>
         <Grid item xs={6}>
           <TextField
             label="Nombre"
@@ -80,12 +124,12 @@ export function UserForm(props) {
         </Grid>
         <Grid item xs={6}>
           <FormControl fullWidth size="small">
-            <InputLabel id="demo-simple-select-label">Age</InputLabel>
+            <InputLabel id="demo-simple-select-label">Role</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={formik.values.role}
-              label="Age"
+              label="Role"
               onChange={(data) =>
                 formik.setFieldValue("role", data.target.value)
               }
