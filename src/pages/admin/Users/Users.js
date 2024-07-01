@@ -76,10 +76,10 @@ export const Users = () => {
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0} className="panel">
-          <ListUsers userActive={true} reload={reload} />
+          <ListUsers userActive={true} reload={reload} onReload={onReload} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1} className="panel">
-          <ListUsers userActive={false} reload={reload} />
+          <ListUsers userActive={false} reload={reload} onReload={onReload} />
         </CustomTabPanel>
       </Grid>
       <BasicModal
